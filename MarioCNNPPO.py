@@ -5,7 +5,7 @@ import torch.nn.functional as F
 
 class MarioCNNPPO(nn.Module):
 
-    def __init__(self):
+    def __init__(self,n_actions):
         super().__init__()
         self.conv = nn.Sequential(
            nn.Conv2d(4,32,kernel_size=8,stride=4),nn.ReLU(),
@@ -17,7 +17,11 @@ class MarioCNNPPO(nn.Module):
             nn.Linear(3136,512),nn.Tanh() #not sure why 512
         )
         self.value = nn.Linear(512,1)
-        self.dist = nn.Linear(512,2)
+        self.dist = nn.Sequential(
+            nn.Linear(512,n_actions),nn.Softmax()
+        )
+
+
 
 
 

@@ -1,10 +1,8 @@
 import sys
-import numpy
-print("Python executable:", sys.executable)
-print("NumPy version:", numpy.__version__)
-print("NumPy location:", numpy.__file__)
-
-
+import numpy as np
+import torch.nn as nn
+import torch.optim
+from MarioCNNPPO import MarioCNNPPO
 import gym_super_mario_bros
 from nes_py.wrappers import JoypadSpace
 from gym_super_mario_bros.actions import SIMPLE_MOVEMENT
@@ -14,15 +12,19 @@ from shimmy import GymV21CompatibilityV0
 # gymnasium — so we build it with the legacy gym API first
 env = gym_super_mario_bros.make("SuperMarioBros-v0")
 env = JoypadSpace(env, SIMPLE_MOVEMENT)
-#then wrap it so it behaves like a gymnasium env
 
+#then wrap it so it behaves like a gymnasium env
 env = GymV21CompatibilityV0(env=env, render_mode="human")
 
+ppo_model = MarioCNNPPO(env.action_space.shape)
+optimizer = torch.optim.Adam(ppo_model.parameters(),lr=0.01)
 
 def get_action():
     pass
 
-
+#GAE
+def calculate_advantages():
+    pass
 
 
 epochs = 1000
@@ -35,3 +37,4 @@ for i in range(epochs):
         env.render()
 
 env.close()
+
