@@ -16,7 +16,9 @@ class MarioCNNPPO(nn.Module):
         self.linear = nn.Sequential(
             nn.Linear(3136,512),nn.Tanh() #not sure why 512
         )
+        #value head
         self.value = nn.Linear(512,1)
+        #distribution head
         self.dist = nn.Sequential(
             nn.Linear(512,n_actions),nn.Softmax()
         )
