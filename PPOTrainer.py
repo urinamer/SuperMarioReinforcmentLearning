@@ -1,31 +1,15 @@
 import sys
-
 import numpy as np
 import torch.nn as nn
 import torch.optim
-import matplotlib.pyplot as plt
-from gym.wrappers import GrayScaleObservation, ResizeObservation, FrameStack
 
 from MarioCNNPPO import MarioCNNPPO
-import gym_super_mario_bros
-from nes_py.wrappers import JoypadSpace
-from gym_super_mario_bros.actions import SIMPLE_MOVEMENT
-from shimmy import GymV21CompatibilityV0
 
 from RollOutBuffer import RollOutBuffer
+from utils import get_env
+from utils import plot_training_data
 
-# gym_super_mario_bros only registers with the OLD `gym` package, not
-# gymnasium — so we build it with the legacy gym API first
-env = gym_super_mario_bros.make("SuperMarioBros-v0")
-env = JoypadSpace(env, SIMPLE_MOVEMENT)
-
-#apply preprocessing pipeline
-env = GrayScaleObservation(env, keep_dim=False) # Shape: (240, 256)
-env = ResizeObservation(env, shape=84)          # Shape: (84, 84)
-env = FrameStack(env, num_stack=4)
-
-#then wrap it so it behaves like a gymnasium env
-env = GymV21CompatibilityV0(env=env, render_mode="human")
+env = get_env(False)
 obs_dim = env.observation_space.shape
 action_dim = 7
 
@@ -54,7 +38,6 @@ def obs_to_tensor(obs):
         arr = arr.squeeze(-1)
     return torch.tensor(arr).unsqueeze(0)           # (4, 84, 84) -> (1, 4, 84, 84)
 
-
 def ppo_loss(advantage, old_log_prob, new_log_prob, clip_epsilon=0.2):
     global num_of_clipped
     global num_of_ppo_elements
@@ -68,35 +51,6 @@ def ppo_loss(advantage, old_log_prob, new_log_prob, clip_epsilon=0.2):
         num_of_ppo_elements += ratio.numel()
     return -torch.min(surr1, surr2).mean()
 
-def plot_training_data(rewards,losses,clip_fractions):
-    fig,(ax1,ax2,ax3) = plt.subplots(1,3,figsize = (18,5))
-
-    ax1.plot(rewards,color = "green",alpha = 0.6)
-    ax1.set_title("Total Reward per Episode")
-    ax1.set_xlabel("Episodes")
-    ax1.set_ylabel("Reward Score")
-    ax1.grid(True)  #adds a clean background grid
-
-
-    ax2.plot(losses,color = "red",alpha =0.6)
-    ax2.set_title("Average Actor loss")
-    ax2.set_xlabel("Episodes")
-    ax2.set_ylabel("Average Loss")
-    ax2.grid(True)
-
-    ax3.plot(clip_fractions, color="orange", alpha=0.6)
-    ax3.set_title("Clip fraction")
-    ax3.set_xlabel("Episodes")
-    ax3.set_ylabel("Percentage Clipped")
-    ax3.grid(True)
-
-    plt.savefig('graphs/ppo_training_graph.png')
-
-    plt.tight_layout()
-    plt.show()
-
-
-
 #training loop
 current_obs, info = env.reset()
 for episode in range(2):
@@ -109,11 +63,11 @@ for episode in range(2):
     for _ in range(2048):
         with torch.no_grad():
 
-            value,logits = ppo_model(obs_to_tensor(current_obs))
+            value,logits = ppo_model(   obs_to_tensor(current_obs))
             # print(f"logits: {logits}")
             dist = torch.distributions.Categorical(logits=logits)
             action = dist.sample()
-            print(f"action {action}")
+            # print(f"action {action}")
             log_prob = dist.log_prob(action)
 
         next_obs, reward, terminated, truncated, info = env.step(action.item())
@@ -169,7 +123,12 @@ for episode in range(2):
     buffer.clear()
 
 torch.save(ppo_model.state_dict(),"ppo_model_weights.pt")
-plot_training_data(rewards,losses,clipped_fractions)
+plot_training_data([
+    {"data": rewards, "title": "Total Reward per Episode", "ylabel": "Reward Score", "color": "green"},
+    {"data": losses, "title": "Average Actor Loss", "ylabel": "Average Loss", "color": "red"},
+    {"data": clipped_fractions, "title": "Clip Fraction", "ylabel": "Percentage Clipped", "color": "orange"},
+], save_path="graphs/ppo_training_graph.png")
+
 
 
 env.close()
