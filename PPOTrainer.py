@@ -8,7 +8,7 @@ from MarioCNNPPO import MarioCNNPPO
 from RollOutBuffer import RollOutBuffer
 from utils import get_env
 from utils import plot_training_data
-
+from utils import obs_to_tensor
 env = get_env(False)
 obs_dim = env.observation_space.shape
 action_dim = 7
@@ -30,13 +30,6 @@ losses = [0.0]
 rewards = [0]
 clipped_fractions = [0.0]
 
-
-#translates environment obs to tensors because env outputs lazyframes objects.
-def obs_to_tensor(obs):
-    arr = np.array(obs, dtype=np.float32)          # LazyFrames -> ndarray
-    if arr.ndim == 4 and arr.shape[-1] == 1:        # squeeze stray channel dim if present
-        arr = arr.squeeze(-1)
-    return torch.tensor(arr).unsqueeze(0)           # (4, 84, 84) -> (1, 4, 84, 84)
 
 def ppo_loss(advantage, old_log_prob, new_log_prob, clip_epsilon=0.2):
     global num_of_clipped
