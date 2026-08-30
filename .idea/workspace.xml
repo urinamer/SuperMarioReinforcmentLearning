@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="848f3b6c-020b-43cc-9370-968ee0f9305f" name="Changes" comment="prepared weights for sitting on a gpu">
+    <list default="true" id="848f3b6c-020b-43cc-9370-968ee0f9305f" name="Changes" comment="added environment">
+      <change afterPath="$PROJECT_DIR$/constraints.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DQLTrainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/DQLTrainer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PPOTrainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/PPOTrainer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ReplayBuffer.py" beforeDir="false" afterPath="$PROJECT_DIR$/ReplayBuffer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,18 +23,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "urinamer"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;urinamer&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/urinamer/SuperMarioReinforcmentLearning.git",
-    "accountId": "1c6dffa1-65ad-4877-9b12-09571f4cb6f3"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/urinamer/SuperMarioReinforcmentLearning.git&quot;,
+    &quot;accountId&quot;: &quot;1c6dffa1-65ad-4877-9b12-09571f4cb6f3&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
 }</component>
@@ -46,19 +43,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.DQLTrainer.executor": "Run",
-    "Python.PPOTrainer.executor": "Run",
-    "Python.Trainer.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "/home/arielhirsch/PycharmProjects/2dWalkerV5-PPO-"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.DQLTrainer.executor&quot;: &quot;Run&quot;,
+    &quot;Python.PPOTrainer.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Trainer.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/arielhirsch/PycharmProjects/2dWalkerV5-PPO-&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -130,7 +127,15 @@
       <option name="project" value="LOCAL" />
       <updated>1788081221559</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="added plotting to dql algorithm and tested both. graphs look ok and project ready to transfer to google colab">
+      <option name="closed" value="true" />
+      <created>1788119715005</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1788119715005</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -152,6 +157,8 @@
     <MESSAGE value="generalized env function and plot function for any RL algorithm" />
     <MESSAGE value="finished DQL implementation" />
     <MESSAGE value="prepared weights for sitting on a gpu" />
-    <option name="LAST_COMMIT_MESSAGE" value="prepared weights for sitting on a gpu" />
+    <MESSAGE value="added plotting to dql algorithm and tested both. graphs look ok and project ready to transfer to google colab" />
+    <MESSAGE value="added environment" />
+    <option name="LAST_COMMIT_MESSAGE" value="added environment" />
   </component>
 </project>
