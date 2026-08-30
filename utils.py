@@ -6,6 +6,7 @@ from shimmy import GymV21CompatibilityV0
 import matplotlib.pyplot as plt
 import torch
 import numpy as np
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def plot_training_data(metrics, save_path="graphs/training_graph.png"):
     """
@@ -56,7 +57,7 @@ def obs_to_tensor(obs):
     arr = np.array(obs, dtype=np.float32)          # LazyFrames -> ndarray
     if arr.ndim == 4 and arr.shape[-1] == 1:        # squeeze stray channel dim if present
         arr = arr.squeeze(-1)
-    return torch.tensor(arr).unsqueeze(0)           # (4, 84, 84) -> (1, 4, 84, 84)
+    return torch.tensor(arr).unsqueeze(0).to(device)          # (4, 84, 84) -> (1, 4, 84, 84)
 
 
 

@@ -11,8 +11,10 @@ env = get_env(False)
 action_dim = 7
 obs_dim = env.observation_space.shape[0]
 
-DQLModel = MarioCNNDQL(n_actions=action_dim)
-target_network = MarioCNNDQL(n_actions=action_dim)
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+DQLModel = MarioCNNDQL(n_actions=action_dim).to(device)
+target_network = MarioCNNDQL(n_actions=action_dim).to(device)
 target_network.load_state_dict(DQLModel.state_dict())#copy weights
 
 optimizer = torch.optim.Adam(DQLModel.parameters(),lr=1e-4)

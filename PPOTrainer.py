@@ -2,6 +2,7 @@ import sys
 import numpy as np
 import torch.nn as nn
 import torch.optim
+from matplotlib.style import available
 
 from MarioCNNPPO import MarioCNNPPO
 
@@ -13,8 +14,10 @@ env = get_env(False)
 obs_dim = env.observation_space.shape
 action_dim = 7
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 #gives action dim of 7 because of 7 different actions it could pick,outputs probs for each one
-ppo_model = MarioCNNPPO(n_actions=action_dim)
+ppo_model = MarioCNNPPO(n_actions=action_dim).to(device)
 optimizer = torch.optim.Adam(ppo_model.parameters(), lr=3e-4)
 critic_loss_fn = nn.HuberLoss()
 #gives action dim of 1 because can only choose one action at a time

@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="848f3b6c-020b-43cc-9370-968ee0f9305f" name="Changes" comment="generalized env function and plot function for any RL algorithm">
-      <change afterPath="$PROJECT_DIR$/DQLTrainer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MarioCNNDQL.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ReplayBuffer.py" afterDir="false" />
+    <list default="true" id="848f3b6c-020b-43cc-9370-968ee0f9305f" name="Changes" comment="finished DQL implementation">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DQLTrainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/DQLTrainer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PPOTrainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/PPOTrainer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils.py" afterDir="false" />
     </list>
@@ -113,7 +111,15 @@
       <option name="project" value="LOCAL" />
       <updated>1787650919078</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="finished DQL implementation">
+      <option name="closed" value="true" />
+      <created>1788023558986</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1788023558986</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -133,6 +139,7 @@
     <MESSAGE value="finished skeleton for ppo implementation" />
     <MESSAGE value="finished ppo implementation." />
     <MESSAGE value="generalized env function and plot function for any RL algorithm" />
-    <option name="LAST_COMMIT_MESSAGE" value="generalized env function and plot function for any RL algorithm" />
+    <MESSAGE value="finished DQL implementation" />
+    <option name="LAST_COMMIT_MESSAGE" value="finished DQL implementation" />
   </component>
 </project>
