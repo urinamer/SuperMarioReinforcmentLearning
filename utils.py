@@ -45,7 +45,7 @@ def get_env(full_color: bool):
     env = FrameStack(env, num_stack=4)
 
     # then wrap it so it behaves like a gymnasium env
-    env = GymV21CompatibilityV0(env=env, render_mode="human")
+    env = GymV21CompatibilityV0(env=env)
 
     return env
 

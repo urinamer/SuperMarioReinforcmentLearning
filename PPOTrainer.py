@@ -49,7 +49,7 @@ def ppo_loss(advantage, old_log_prob, new_log_prob, clip_epsilon=0.2):
 
 #training loop
 current_obs, info = env.reset()
-for episode in range(2):
+for episode in range(10):
     total_rewards = 0
     sum_actor_loss = 0
     num_of_steps = 1
@@ -95,7 +95,7 @@ for episode in range(2):
             #recalculate predictions with current network states
             new_value,logits = ppo_model(obs)
             new_dist = torch.distributions.Categorical(logits=logits)
-            print(f'actions: {action}')
+            # print(f'actions: {action}')
             new_log_prob = new_dist.log_prob(action)
 
             # losses
