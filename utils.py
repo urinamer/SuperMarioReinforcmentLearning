@@ -35,7 +35,7 @@ def plot_training_data(metrics, save_path="graphs/training_graph.png"):
 def get_env(full_color: bool):
     # gym_super_mario_bros only registers with the OLD `gym` package, not
     # gymnasium — so we build it with the legacy gym API first
-    env = gym_super_mario_bros.make("SuperMarioBros-v0")
+    env = gym_super_mario_bros.make("SuperMarioBros-v0",render_mode = "human")
     env = JoypadSpace(env, SIMPLE_MOVEMENT)
 
     # apply preprocessing pipeline

@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="848f3b6c-020b-43cc-9370-968ee0f9305f" name="Changes" comment="added environment">
-      <change afterPath="$PROJECT_DIR$/constraints.txt" afterDir="false" />
+    <list default="true" id="848f3b6c-020b-43cc-9370-968ee0f9305f" name="Changes" comment="changed constraints to requirements">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PPOTrainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/PPOTrainer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,6 +50,7 @@
     &quot;Python.DQLTrainer.executor&quot;: &quot;Run&quot;,
     &quot;Python.PPOTrainer.executor&quot;: &quot;Run&quot;,
     &quot;Python.Trainer.executor&quot;: &quot;Run&quot;,
+    &quot;Python.utils.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
@@ -135,7 +137,23 @@
       <option name="project" value="LOCAL" />
       <updated>1788119715005</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="added environment">
+      <option name="closed" value="true" />
+      <created>1788120887665</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1788120887665</updated>
+    </task>
+    <task id="LOCAL-00010" summary="changed constraints to requirements">
+      <option name="closed" value="true" />
+      <created>1788120992264</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1788120992264</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -159,6 +177,7 @@
     <MESSAGE value="prepared weights for sitting on a gpu" />
     <MESSAGE value="added plotting to dql algorithm and tested both. graphs look ok and project ready to transfer to google colab" />
     <MESSAGE value="added environment" />
-    <option name="LAST_COMMIT_MESSAGE" value="added environment" />
+    <MESSAGE value="changed constraints to requirements" />
+    <option name="LAST_COMMIT_MESSAGE" value="changed constraints to requirements" />
   </component>
 </project>

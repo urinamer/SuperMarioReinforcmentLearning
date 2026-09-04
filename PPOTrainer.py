@@ -3,7 +3,7 @@ import numpy as np
 import torch.nn as nn
 import torch.optim
 from matplotlib.style import available
-
+import os
 from MarioCNNPPO import MarioCNNPPO
 
 from RollOutBuffer import RollOutBuffer
@@ -24,6 +24,11 @@ critic_loss_fn = nn.HuberLoss()
 buffer = RollOutBuffer(size=2048, obs_dim=obs_dim,action_dim=1)
 #learning rate decay
 scheduler = torch.optim.lr_scheduler.LinearLR(optimizer, start_factor=1.0, end_factor=0.1, total_iters=3000)
+
+#checkpoint dir and file for saving
+checkpoint_dir = os.path.join(os.path.dirname(__file__), "checkpoints")
+os.makedirs(checkpoint_dir, exist_ok=True)
+checkpoint_path = os.path.join(checkpoint_dir, "ppo_checkpoint.pt")
 
 
 #data for plotting
@@ -47,14 +52,41 @@ def ppo_loss(advantage, old_log_prob, new_log_prob, clip_epsilon=0.2):
         num_of_ppo_elements += ratio.numel()
     return -torch.min(surr1, surr2).mean()
 
+
+#loading previous data from google drive
+start_episode = 0
+if os.path.exists(checkpoint_path):
+    ckpt = torch.load(checkpoint_path, map_location=device)
+    ppo_model.load_state_dict(ckpt["model_state"])
+    optimizer.load_state_dict(ckpt["optimizer_state"])
+    start_episode = ckpt["episode"] + 1
+    rewards = ckpt.get("rewards", rewards)
+    losses = ckpt.get("losses", losses)
+    print(f"Resumed from episode {start_episode}")
+else:
+    print("No checkpoint found — starting fresh")
+
+
+
 #training loop
 current_obs, info = env.reset()
-for episode in range(10):
+for episode in range(40):
     total_rewards = 0
     sum_actor_loss = 0
     num_of_steps = 1
     num_of_ppo_elements = 0
     num_of_clipped = 0
+
+    #saving data to not lose it in a crash
+    if episode % 20 == 0:
+        torch.save({
+            "model_state": ppo_model.state_dict(),
+            "optimizer_state": optimizer.state_dict(),
+            "episode": episode,
+            "rewards": rewards,
+            "losses": losses,
+        }, checkpoint_path)
+
     #collecting experiences
     for _ in range(2048):
         with torch.no_grad():
