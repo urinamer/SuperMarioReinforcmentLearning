@@ -7,6 +7,7 @@
     <list default="true" id="848f3b6c-020b-43cc-9370-968ee0f9305f" name="Changes" comment="changed constraints to requirements">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PPOTrainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/PPOTrainer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RollOutBuffer.py" beforeDir="false" afterPath="$PROJECT_DIR$/RollOutBuffer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -50,6 +51,7 @@
     &quot;Python.DQLTrainer.executor&quot;: &quot;Run&quot;,
     &quot;Python.PPOTrainer.executor&quot;: &quot;Run&quot;,
     &quot;Python.Trainer.executor&quot;: &quot;Run&quot;,
+    &quot;Python.time_test.executor&quot;: &quot;Run&quot;,
     &quot;Python.utils.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,

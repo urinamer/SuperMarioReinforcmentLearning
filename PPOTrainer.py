@@ -1,15 +1,14 @@
-import sys
-import numpy as np
+
 import torch.nn as nn
 import torch.optim
-from matplotlib.style import available
 import os
 from MarioCNNPPO import MarioCNNPPO
-
 from RollOutBuffer import RollOutBuffer
 from utils import get_env
 from utils import plot_training_data
 from utils import obs_to_tensor
+import time
+
 env = get_env(False)
 obs_dim = env.observation_space.shape
 action_dim = 7
@@ -54,8 +53,9 @@ def ppo_loss(advantage, old_log_prob, new_log_prob, clip_epsilon=0.2):
 
 
 #loading previous data from google drive
+start_fresh = True
 start_episode = 0
-if os.path.exists(checkpoint_path):
+if os.path.exists(checkpoint_path) and not start_fresh:
     ckpt = torch.load(checkpoint_path, map_location=device)
     ppo_model.load_state_dict(ckpt["model_state"])
     optimizer.load_state_dict(ckpt["optimizer_state"])
@@ -64,13 +64,15 @@ if os.path.exists(checkpoint_path):
     losses = ckpt.get("losses", losses)
     print(f"Resumed from episode {start_episode}")
 else:
-    print("No checkpoint found — starting fresh")
+    print("starting fresh training")
 
 
 
 #training loop
+starting_time = time.time()
 current_obs, info = env.reset()
-for episode in range(40):
+total_steps = 0
+for episode in range(start_episode,start_episode + 201):
     total_rewards = 0
     sum_actor_loss = 0
     num_of_steps = 1
@@ -79,6 +81,7 @@ for episode in range(40):
 
     #saving data to not lose it in a crash
     if episode % 20 == 0:
+        print("saving data")
         torch.save({
             "model_state": ppo_model.state_dict(),
             "optimizer_state": optimizer.state_dict(),
@@ -91,7 +94,7 @@ for episode in range(40):
     for _ in range(2048):
         with torch.no_grad():
 
-            value,logits = ppo_model(   obs_to_tensor(current_obs))
+            value,logits = ppo_model(obs_to_tensor(current_obs))
             # print(f"logits: {logits}")
             dist = torch.distributions.Categorical(logits=logits)
             action = dist.sample()
@@ -121,7 +124,7 @@ for episode in range(40):
 
 
     #actual training
-    batch_size = 100
+    batch_size = 128
     for epoch in range(5):
         for obs, action, old_log_prob, value, advantage, target in buffer.get_batches(batch_size):
             #recalculate predictions with current network states
@@ -145,10 +148,18 @@ for episode in range(40):
             total_loss.backward()
             optimizer.step()
 
+    total_steps += num_of_steps
     rewards.append(total_rewards)
     losses.append(sum_actor_loss / num_of_steps)
     clipped_fractions.append(num_of_clipped/num_of_ppo_elements)
     buffer.clear()
+
+total_time = time.time()-starting_time
+steps_per_second = total_steps/total_time
+print(f"finished training in {total_time} seconds or {total_time/3600} hours")
+print(f"{total_steps} steps in {total_time} seconds, = {steps_per_second} steps per second")
+print(f"that means for 2M steps it would take {2_000_000/steps_per_second/3600} hours")
+print(f"that means for 8M steps it would take {8_000_000/steps_per_second/3600} hours")
 
 torch.save(ppo_model.state_dict(),"ppo_model_weights.pt")
 plot_training_data([
@@ -156,8 +167,6 @@ plot_training_data([
     {"data": losses, "title": "Average Actor Loss", "ylabel": "Average Loss", "color": "red"},
     {"data": clipped_fractions, "title": "Clip Fraction", "ylabel": "Percentage Clipped", "color": "orange"},
 ], save_path="graphs/ppo_training_graph.png")
-
-
 
 env.close()
 

@@ -26,7 +26,7 @@ class RollOutBuffer:
         self.current_insert += 1
 
 
-    #runs when buffer is full is full
+    #GAE runs when buffer is full is full
     def calculateAdvantagesAndReturns(self,next_value,done,gamma = 0.99,lamda = 0.95):
         gae = 0
         for t in reversed(range(self.size)):
