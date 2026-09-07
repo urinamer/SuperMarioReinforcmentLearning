@@ -32,7 +32,7 @@ def plot_training_data(metrics, save_path="graphs/training_graph.png"):
     plt.savefig(save_path)
     plt.show()
 
-def get_env(full_color: bool):
+def get_env(full_color: bool,render_mode):
     # gym_super_mario_bros only registers with the OLD `gym` package, not
     # gymnasium — so we build it with the legacy gym API first
     env = gym_super_mario_bros.make("SuperMarioBros-v0")
@@ -45,7 +45,7 @@ def get_env(full_color: bool):
     env = FrameStack(env, num_stack=4)
 
     # then wrap it so it behaves like a gymnasium env
-    env = GymV21CompatibilityV0(env=env)
+    env = GymV21CompatibilityV0(env=env,render_mode=render_mode)
 
     return env
 

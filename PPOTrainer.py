@@ -9,7 +9,7 @@ from utils import plot_training_data
 from utils import obs_to_tensor
 import time
 
-env = get_env(False)
+env = get_env(False,'rgb_array')
 obs_dim = env.observation_space.shape
 action_dim = 7
 
@@ -19,6 +19,8 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 ppo_model = MarioCNNPPO(n_actions=action_dim).to(device)
 optimizer = torch.optim.Adam(ppo_model.parameters(), lr=3e-4)
 critic_loss_fn = nn.HuberLoss()
+entropy_c2 = 0.01
+
 #gives action dim of 1 because can only choose one action at a time
 buffer = RollOutBuffer(size=2048, obs_dim=obs_dim,action_dim=1)
 #learning rate decay
@@ -137,7 +139,8 @@ for episode in range(start_episode,start_episode + 201):
             actor_loss = ppo_loss(advantage, old_log_prob, new_log_prob)
             critic_loss = critic_loss_fn(new_value, target)#maybe add value clipping
 
-            total_loss = actor_loss + critic_loss
+            #total loss comprised from actor loss + critic loss and subtracting the entropy
+            total_loss = actor_loss + critic_loss - (entropy_c2*new_dist.entropy())
 
             sum_actor_loss += actor_loss.sum().item()
             num_of_steps += batch_size

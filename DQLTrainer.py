@@ -7,7 +7,7 @@ from utils import obs_to_tensor
 from MarioCNNDQL import MarioCNNDQL
 from ReplayBuffer import ReplayBuffer
 
-env = get_env(False)
+env = get_env(False,'rgb_array')
 action_dim = 7
 obs_dim = env.observation_space.shape[0]
 
