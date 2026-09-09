@@ -33,7 +33,7 @@ class RollOutBuffer:
             if t == self.size-1:
                 next_state_not_done = not done
             else:
-                next_state_not_done = not self.masks[t+1]
+                next_state_not_done = not self.masks[t]
 
             delta = self.rewards[t] + gamma*next_value * next_state_not_done  - self.values[t]
             gae = delta + lamda*gamma * gae*next_state_not_done

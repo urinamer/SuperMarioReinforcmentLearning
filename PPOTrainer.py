@@ -38,6 +38,7 @@ num_of_clipped = 0
 losses = [0.0]
 rewards = [0]
 clipped_fractions = [0.0]
+# max_x_pos= [0.0]
 
 
 def ppo_loss(advantage, old_log_prob, new_log_prob, clip_epsilon=0.2):
@@ -55,7 +56,7 @@ def ppo_loss(advantage, old_log_prob, new_log_prob, clip_epsilon=0.2):
 
 
 #loading previous data from google drive
-start_fresh = True
+start_fresh = False
 start_episode = 0
 if os.path.exists(checkpoint_path) and not start_fresh:
     ckpt = torch.load(checkpoint_path, map_location=device)
@@ -133,14 +134,13 @@ for episode in range(start_episode,start_episode + 201):
             new_value,logits = ppo_model(obs)
             new_dist = torch.distributions.Categorical(logits=logits)
             # print(f'actions: {action}')
-            new_log_prob = new_dist.log_prob(action)
-
+            new_log_prob = new_dist.log_prob(action.unsqueeze(-1))
+            print(new_log_prob)
             # losses
             actor_loss = ppo_loss(advantage, old_log_prob, new_log_prob)
             critic_loss = critic_loss_fn(new_value, target)#maybe add value clipping
 
-            #total loss comprised from actor loss + critic loss and subtracting the entropy
-            total_loss = actor_loss + critic_loss - (entropy_c2*new_dist.entropy())
+            total_loss = actor_loss*0.5 + critic_loss - (entropy_c2*new_dist.entropy().mean())
 
             sum_actor_loss += actor_loss.sum().item()
             num_of_steps += batch_size
@@ -157,12 +157,12 @@ for episode in range(start_episode,start_episode + 201):
     clipped_fractions.append(num_of_clipped/num_of_ppo_elements)
     buffer.clear()
 
-total_time = time.time()-starting_time
-steps_per_second = total_steps/total_time
-print(f"finished training in {total_time} seconds or {total_time/3600} hours")
-print(f"{total_steps} steps in {total_time} seconds, = {steps_per_second} steps per second")
-print(f"that means for 2M steps it would take {2_000_000/steps_per_second/3600} hours")
-print(f"that means for 8M steps it would take {8_000_000/steps_per_second/3600} hours")
+# total_time = time.time()-starting_time
+# steps_per_second = total_steps/total_time
+# print(f"finished training in {total_time} seconds or {total_time/3600} hours")
+# print(f"{total_steps} steps in {total_time} seconds, = {steps_per_second} steps per second")
+# print(f"that means for 2M steps it would take {2_000_000/steps_per_second/3600} hours")
+# print(f"that means for 8M steps it would take {8_000_000/steps_per_second/3600} hours")
 
 torch.save(ppo_model.state_dict(),"ppo_model_weights.pt")
 plot_training_data([
