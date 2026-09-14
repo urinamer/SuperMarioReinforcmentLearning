@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="848f3b6c-020b-43cc-9370-968ee0f9305f" name="Changes" comment="tested time to train in ppo">
-      <change afterPath="$PROJECT_DIR$/MarioTester.py" afterDir="false" />
+    <list default="true" id="848f3b6c-020b-43cc-9370-968ee0f9305f" name="Changes" comment="fixed action with wrong dimension and off by one bug in GAE">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DQLTrainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/DQLTrainer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PPOTrainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/PPOTrainer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils.py" afterDir="false" />
     </list>
@@ -45,6 +43,8 @@
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
+    <option name="sortByType" value="true" />
+    <option name="sortKey" value="BY_TYPE" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
@@ -59,7 +59,8 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master",
-    "last_opened_file_path": "/home/arielhirsch/PycharmProjects/2dWalkerV5-PPO-"
+    "last_opened_file_path": "/home/arielhirsch/PycharmProjects/2dWalkerV5-PPO-",
+    "settings.editor.selected.configurable": "preferences.editor.code.editing"
   }
 }]]></component>
   <component name="SharedIndexes">
@@ -165,7 +166,23 @@
       <option name="project" value="LOCAL" />
       <updated>1788774104418</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="added entropy bonus and built tester for models">
+      <option name="closed" value="true" />
+      <created>1788779890413</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1788779890413</updated>
+    </task>
+    <task id="LOCAL-00013" summary="fixed action with wrong dimension and off by one bug in GAE">
+      <option name="closed" value="true" />
+      <created>1788950099789</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1788950099789</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -191,6 +208,8 @@
     <MESSAGE value="added environment" />
     <MESSAGE value="changed constraints to requirements" />
     <MESSAGE value="tested time to train in ppo" />
-    <option name="LAST_COMMIT_MESSAGE" value="tested time to train in ppo" />
+    <MESSAGE value="added entropy bonus and built tester for models" />
+    <MESSAGE value="fixed action with wrong dimension and off by one bug in GAE" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed action with wrong dimension and off by one bug in GAE" />
   </component>
 </project>

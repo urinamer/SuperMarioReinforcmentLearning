@@ -1,3 +1,4 @@
+import gym.vector
 from gym.wrappers import GrayScaleObservation, ResizeObservation, FrameStack
 import gym_super_mario_bros
 from nes_py.wrappers import JoypadSpace

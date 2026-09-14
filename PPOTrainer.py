@@ -19,12 +19,12 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 ppo_model = MarioCNNPPO(n_actions=action_dim).to(device)
 optimizer = torch.optim.Adam(ppo_model.parameters(), lr=3e-4)
 critic_loss_fn = nn.HuberLoss()
-entropy_c2 = 0.01
+entropy_c2 = 0.04
 
 #gives action dim of 1 because can only choose one action at a time
 buffer = RollOutBuffer(size=2048, obs_dim=obs_dim,action_dim=1)
 #learning rate decay
-scheduler = torch.optim.lr_scheduler.LinearLR(optimizer, start_factor=1.0, end_factor=0.1, total_iters=3000)
+scheduler = torch.optim.lr_scheduler.LinearLR(optimizer, start_factor=1.0, end_factor=0.1)
 
 #checkpoint dir and file for saving
 checkpoint_dir = os.path.join(os.path.dirname(__file__), "checkpoints")
@@ -35,9 +35,11 @@ checkpoint_path = os.path.join(checkpoint_dir, "ppo_checkpoint.pt")
 #data for plotting
 num_of_ppo_elements = 0
 num_of_clipped = 0
-losses = [0.0]
-rewards = [0]
-clipped_fractions = [0.0]
+actor_losses = []
+critic_losses = []
+entropys = []
+rewards = []
+clipped_fractions = []
 # max_x_pos= [0.0]
 
 
@@ -56,7 +58,7 @@ def ppo_loss(advantage, old_log_prob, new_log_prob, clip_epsilon=0.2):
 
 
 #loading previous data from google drive
-start_fresh = False
+start_fresh = True
 start_episode = 0
 if os.path.exists(checkpoint_path) and not start_fresh:
     ckpt = torch.load(checkpoint_path, map_location=device)
@@ -64,7 +66,10 @@ if os.path.exists(checkpoint_path) and not start_fresh:
     optimizer.load_state_dict(ckpt["optimizer_state"])
     start_episode = ckpt["episode"] + 1
     rewards = ckpt.get("rewards", rewards)
-    losses = ckpt.get("losses", losses)
+    clipped_fractions = ckpt.get("clip fractions",clipped_fractions)
+    actor_losses = ckpt.get("actor losses", actor_losses)
+    critic_losses = ckpt.get("critic losses",critic_losses)
+    entropys = ckpt.get("entropy",entropys)
     print(f"Resumed from episode {start_episode}")
 else:
     print("starting fresh training")
@@ -72,13 +77,18 @@ else:
 
 
 #training loop
+epoches = 250
+scheduler.total_iters = epoches
 starting_time = time.time()
 current_obs, info = env.reset()
 total_steps = 0
-for episode in range(start_episode,start_episode + 201):
+for episode in range(start_episode,start_episode + epoches):
     total_rewards = 0
     sum_actor_loss = 0
-    num_of_steps = 1
+    sum_critic_loss = 0
+    sum_entropy = 0
+    num_of_updates = 0
+    num_of_steps = 0
     num_of_ppo_elements = 0
     num_of_clipped = 0
 
@@ -90,7 +100,10 @@ for episode in range(start_episode,start_episode + 201):
             "optimizer_state": optimizer.state_dict(),
             "episode": episode,
             "rewards": rewards,
-            "losses": losses,
+            "clip fractions": clipped_fractions,
+            "actor losses": actor_losses,
+            "critic losses": critic_losses,
+            "entropy":entropys,
         }, checkpoint_path)
 
     #collecting experiences
@@ -116,7 +129,6 @@ for episode in range(start_episode,start_episode + 201):
 
         total_rewards += reward
 
-
     # estimating advantages with GAE
     with torch.no_grad():
         last_value,_ = ppo_model(obs_to_tensor(current_obs))
@@ -124,7 +136,6 @@ for episode in range(start_episode,start_episode + 201):
 
     #advantage normalization
     buffer.normalize_advantages()
-
 
     #actual training
     batch_size = 128
@@ -134,16 +145,18 @@ for episode in range(start_episode,start_episode + 201):
             new_value,logits = ppo_model(obs)
             new_dist = torch.distributions.Categorical(logits=logits)
             # print(f'actions: {action}')
-            new_log_prob = new_dist.log_prob(action.unsqueeze(-1))
-            print(new_log_prob)
+            new_log_prob = new_dist.log_prob(action.squeeze(-1))
             # losses
             actor_loss = ppo_loss(advantage, old_log_prob, new_log_prob)
-            critic_loss = critic_loss_fn(new_value, target)#maybe add value clipping
+            critic_loss = critic_loss_fn(new_value.squeeze(-1), target) #maybe add value clipping
 
-            total_loss = actor_loss*0.5 + critic_loss - (entropy_c2*new_dist.entropy().mean())
+            entropy = new_dist.entropy().mean()
+            total_loss = actor_loss + critic_loss - (entropy_c2*entropy)
 
-            sum_actor_loss += actor_loss.sum().item()
-            num_of_steps += batch_size
+            sum_entropy += entropy.item()
+            sum_critic_loss += critic_loss.item()
+            sum_actor_loss += actor_loss.item()
+            num_of_updates += 1
 
 
             # backprop
@@ -151,23 +164,30 @@ for episode in range(start_episode,start_episode + 201):
             total_loss.backward()
             optimizer.step()
 
-    total_steps += num_of_steps
+
+    total_steps += buffer.size
+    # decaying learning rate
+    scheduler.step()
     rewards.append(total_rewards)
-    losses.append(sum_actor_loss / num_of_steps)
+    entropys.append(sum_entropy/num_of_updates)
+    critic_losses.append(sum_critic_loss/num_of_updates)
+    actor_losses.append(sum_actor_loss / num_of_updates)
     clipped_fractions.append(num_of_clipped/num_of_ppo_elements)
     buffer.clear()
 
-# total_time = time.time()-starting_time
-# steps_per_second = total_steps/total_time
-# print(f"finished training in {total_time} seconds or {total_time/3600} hours")
-# print(f"{total_steps} steps in {total_time} seconds, = {steps_per_second} steps per second")
-# print(f"that means for 2M steps it would take {2_000_000/steps_per_second/3600} hours")
-# print(f"that means for 8M steps it would take {8_000_000/steps_per_second/3600} hours")
+total_time = time.time()-starting_time
+steps_per_second = total_steps/total_time
+print(f"finished training in {total_time} seconds or {total_time/3600} hours")
+print(f"{total_steps} steps in {total_time} seconds, = {steps_per_second} steps per second")
+print(f"that means for 2M steps it would take {2_000_000/steps_per_second/3600} hours")
+print(f"that means for 8M steps it would take {8_000_000/steps_per_second/3600} hours")
 
 torch.save(ppo_model.state_dict(),"ppo_model_weights.pt")
 plot_training_data([
     {"data": rewards, "title": "Total Reward per Episode", "ylabel": "Reward Score", "color": "green"},
-    {"data": losses, "title": "Average Actor Loss", "ylabel": "Average Loss", "color": "red"},
+    {"data": actor_losses, "title": "Average Actor Loss", "ylabel": "Average Loss", "color": "red"},
+    {"data": critic_losses, "title": "Average Critic Loss", "ylabel": "Average Loss", "color": "yellow"},
+    {"data": entropys, "title": "Average Entropy", "ylabel": "Average Entropy", "color": "blue"},
     {"data": clipped_fractions, "title": "Clip Fraction", "ylabel": "Percentage Clipped", "color": "orange"},
 ], save_path="graphs/ppo_training_graph.png")
 
